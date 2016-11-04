@@ -21,10 +21,23 @@ object App {
     } yield ()
   }
 
+  val program2: (Position => Free[Instruction, Unit]) = {
+    import ss._
+    s: Position =>
+      for {
+        p1 <- forward(s, 10)
+        p2 <- right(p1, Degree(45))
+        p3 <- forward(p2, 10)
+        p4 <- backward(p3, 20)//Here the computation stops, because result will be None
+        _ <- showPosition(p4)
+      } yield ()
+  }
+
+
   def main(args: Array[String]):Unit = {
     val startPosition = Position(0.0, 0.0, Degree(0))
-    val interpreter: LogoApp ~> Id = InterpreterId or PenInterpreterId
+    val interpreter = InterpreterId
 
-    program(startPosition).foldMap(interpreter) // foldMap does trampolining
+    program2(startPosition).foldMap(interpreter) // foldMap does trampolining
   }
 }

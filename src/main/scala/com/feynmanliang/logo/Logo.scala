@@ -31,6 +31,14 @@ object Logo {
       def showPosition(pos: Position): Free[F, Unit] = Free.inject[Instruction, F](ShowPosition(pos))
     }
 
+    object ss {
+      def forward(pos: Position, l: Int): Free[Instruction, Position] = Free.liftF(Forward(pos, l))
+      def backward(pos: Position, l: Int): Free[Instruction, Position] = Free.liftF(Backward(pos, l))
+      def left(pos: Position, l: Degree): Free[Instruction, Position] = Free.liftF(RotateLeft(pos, l))
+      def right(pos: Position, l: Degree): Free[Instruction, Position] = Free.liftF(RotateRight(pos, l))
+      def showPosition(pos: Position): Free[Instruction, Unit] = Free.liftF(ShowPosition(pos))
+    }
+
     object Moves {
       implicit def moves[F[_]](implicit I: Inject[Instruction, F]): Moves[F] = new Moves[F]
     }
